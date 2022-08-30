@@ -60,3 +60,19 @@ INSERT INTO `libretas` (`Id`,`Tipo_movimiento`,`Monto`,`Fecha`,`numero_transacio
 INSERT INTO `libretas` (`Id`,`Tipo_movimiento`,`Monto`,`Fecha`,`numero_transacion`,`Rublo_id`,`Cuenta_id`) VALUES (16,'Ingreso',200,'2022-08-28 00:00:00','0000000016',10,9);
 INSERT INTO `libretas` (`Id`,`Tipo_movimiento`,`Monto`,`Fecha`,`numero_transacion`,`Rublo_id`,`Cuenta_id`) VALUES (17,'Ingreso',300,'2022-08-28 00:00:00','0000000017',10,9);
 INSERT INTO `libretas` (`Id`,`Tipo_movimiento`,`Monto`,`Fecha`,`numero_transacion`,`Rublo_id`,`Cuenta_id`) VALUES (18,'Ingreso',500,'2022-08-28 00:00:00','0000000018',10,9);
+
+-- Insertar Datos en la tabla de ROl
+INSERT INTO `roles` (`Id`,`Nombre_rol`,`Tipo_rol`,`Descripcion_rol`) VALUES (1,'Gerente','Ninguno','Es el gerente');
+INSERT INTO `roles` (`Id`,`Nombre_rol`,`Tipo_rol`,`Descripcion_rol`) VALUES (2,'Sub-Gerente','Ninguno','Es el Sub-gerente');
+INSERT INTO `roles` (`Id`,`Nombre_rol`,`Tipo_rol`,`Descripcion_rol`) VALUES (3,'Vendedor','Ninguno','Es el Vendedor');
+INSERT INTO `roles` (`Id`,`Nombre_rol`,`Tipo_rol`,`Descripcion_rol`) VALUES (4,'Cajero','Ninguno','Es el Cajero');
+
+-- Insertar Datos en la tabla de relacion de Usuario y Rol
+INSERT INTO `usuarios_roles` (`Id`,`Usuario_id`,`Rol_id`) VALUES (1,1,1);
+INSERT INTO `usuarios_roles` (`Id`,`Usuario_id`,`Rol_id`) VALUES (2,1,2);
+INSERT INTO `usuarios_roles` (`Id`,`Usuario_id`,`Rol_id`) VALUES (3,1,3);
+INSERT INTO `usuarios_roles` (`Id`,`Usuario_id`,`Rol_id`) VALUES (4,1,4);
+INSERT INTO `usuarios_roles` (`Id`,`Usuario_id`,`Rol_id`) VALUES (5,2,3);
+INSERT INTO `usuarios_roles` (`Id`,`Usuario_id`,`Rol_id`) VALUES (6,2,4);
+INSERT INTO `usuarios_roles` (`Id`,`Usuario_id`,`Rol_id`) VALUES (7,3,3);
+INSERT INTO `usuarios_roles` (`Id`,`Usuario_id`,`Rol_id`) VALUES (8,4,4);

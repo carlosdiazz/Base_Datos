@@ -1,16 +1,3 @@
--- MySQL Workbench Forward Engineering
-
-SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
-SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
-SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
-
--- -----------------------------------------------------
--- Schema mydb
--- -----------------------------------------------------
--- -----------------------------------------------------
--- Schema contabilidad
--- -----------------------------------------------------
-
 -- -----------------------------------------------------
 -- Schema contabilidad
 -- -----------------------------------------------------
@@ -33,8 +20,9 @@ CREATE TABLE IF NOT EXISTS `contabilidad`.`usuarios` (
   `Status` VARCHAR(45) NOT NULL,
   `imagen_url` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`Id`),
-  UNIQUE INDEX `Email_UNIQUE` (`Email` ASC) VISIBLE)
-ENGINE = InnoDB
+  UNIQUE INDEX `Email_UNIQUE` (`Email` ASC),
+  UNIQUE INDEX `Nickname_UNIQUE` (`Nickname` ASC),
+  UNIQUE INDEX `Id_UNIQUE` (`Id` ASC) )
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -51,13 +39,13 @@ CREATE TABLE IF NOT EXISTS `contabilidad`.`bancos` (
   `Descripcion` VARCHAR(45) NULL DEFAULT NULL,
   `Usuario_id` INT(11) NOT NULL,
   PRIMARY KEY (`Id`),
-  INDEX `bancos_usuario_idx` (`Usuario_id` ASC) VISIBLE,
+  UNIQUE INDEX `Id_UNIQUE` (`Id` ASC),
+  INDEX `bancos_usuario_idx` (`Usuario_id` ASC) ,
   CONSTRAINT `bancos_usuario`
     FOREIGN KEY (`Usuario_id`)
     REFERENCES `contabilidad`.`usuarios` (`Id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -74,8 +62,9 @@ CREATE TABLE IF NOT EXISTS `contabilidad`.`cuentas` (
   `Usuario_id` INT(11) NOT NULL,
   `Banco_id` INT(11) NOT NULL,
   PRIMARY KEY (`Id`),
-  INDEX `cuentas_usuario_idx` (`Usuario_id` ASC) VISIBLE,
-  INDEX `cuentas_bancos_idx` (`Banco_id` ASC) VISIBLE,
+  UNIQUE INDEX `Id_UNIQUE` (`Id` ASC) ,
+  INDEX `cuentas_usuario_idx` (`Usuario_id` ASC) ,
+  INDEX `cuentas_bancos_idx` (`Banco_id` ASC),
   CONSTRAINT `cuentas_bancos`
     FOREIGN KEY (`Banco_id`)
     REFERENCES `contabilidad`.`bancos` (`Id`)
@@ -86,7 +75,6 @@ CREATE TABLE IF NOT EXISTS `contabilidad`.`cuentas` (
     REFERENCES `contabilidad`.`usuarios` (`Id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -99,13 +87,13 @@ CREATE TABLE IF NOT EXISTS `contabilidad`.`rublos` (
   `Tipo_rublo` VARCHAR(45) NOT NULL,
   `Usuario_id` INT(11) NOT NULL,
   PRIMARY KEY (`Id`),
-  INDEX `rublos_user_idx` (`Usuario_id` ASC) VISIBLE,
+  UNIQUE INDEX `Id_UNIQUE` (`Id` ASC) ,
+  INDEX `rublos_user_idx` (`Usuario_id` ASC),
   CONSTRAINT `rublos_user`
     FOREIGN KEY (`Usuario_id`)
     REFERENCES `contabilidad`.`usuarios` (`Id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -117,12 +105,13 @@ CREATE TABLE IF NOT EXISTS `contabilidad`.`libretas` (
   `Tipo_movimiento` VARCHAR(45) NOT NULL,
   `Monto` DECIMAL(10,0) NOT NULL,
   `fecha` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `numero_transacion` VARCHAR(45) NULL DEFAULT NULL,
+  `numero_transacion` VARCHAR(45) NOT NULL,
   `Cuenta_id` INT(11) NOT NULL,
   `Rublo_id` INT(11) NOT NULL,
   PRIMARY KEY (`Id`),
-  INDEX `libretas_cuenta_idx` (`Cuenta_id` ASC) VISIBLE,
-  INDEX `libreta_rublo_idx` (`Rublo_id` ASC) VISIBLE,
+  UNIQUE INDEX `numero_transacion_UNIQUE` (`numero_transacion` ASC) ,
+  INDEX `libretas_cuenta_idx` (`Cuenta_id` ASC),
+  INDEX `libreta_rublo_idx` (`Rublo_id` ASC) ,
   CONSTRAINT `libreta_rublo`
     FOREIGN KEY (`Rublo_id`)
     REFERENCES `contabilidad`.`rublos` (`Id`)
@@ -133,10 +122,41 @@ CREATE TABLE IF NOT EXISTS `contabilidad`.`libretas` (
     REFERENCES `contabilidad`.`cuentas` (`Id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
-SET SQL_MODE=@OLD_SQL_MODE;
-SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
-SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+-- -----------------------------------------------------
+-- Table `contabilidad`.`roles`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `contabilidad`.`roles` (
+  `Id` INT(11) NOT NULL,
+  `Nombre_rol` VARCHAR(45) NOT NULL,
+  `Tipo_rol` VARCHAR(45) NOT NULL,
+  `Descripcion_rol` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`Id`),
+  UNIQUE INDEX `Id_UNIQUE` (`Id` ASC) )
+DEFAULT CHARACTER SET = latin1;
+
+
+-- -----------------------------------------------------
+-- Table `contabilidad`.`usuarios_roles`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `contabilidad`.`usuarios_roles` (
+  `Id` INT(11) NOT NULL,
+  `Usuario_id` INT(11) NOT NULL,
+  `Rol_id` INT(11) NOT NULL,
+  PRIMARY KEY (`Id`),
+  UNIQUE INDEX `Id_UNIQUE` (`Id` ASC),
+  INDEX `usuarios_roles_usuarios_idx` (`Usuario_id` ASC),
+  INDEX `usuarios_roles_rol_idx` (`Rol_id` ASC),
+  CONSTRAINT `usuarios_roles_rol`
+    FOREIGN KEY (`Rol_id`)
+    REFERENCES `contabilidad`.`roles` (`Id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `usuarios_roles_usuarios`
+    FOREIGN KEY (`Usuario_id`)
+    REFERENCES `contabilidad`.`usuarios` (`Id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+DEFAULT CHARACTER SET = latin1;

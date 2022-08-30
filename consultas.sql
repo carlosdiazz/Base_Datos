@@ -193,3 +193,40 @@ order by Monto DESC;
 select *
 from libretas
 limit 5;
+
+-- COn having puedo filtrar los datos que ya tengo agrupado
+select Nickname,Nombre_cuenta,Nombre_banco, max(Monto) Ingreso_Mayor, Nombre_rublo, min(Monto) Ingreso_menor
+from usuarios
+inner join cuentas on cuentas.Usuario_id = usuarios.Id
+inner join bancos on cuentas.Banco_id = bancos.Id
+inner join libretas on libretas.Cuenta_id = cuentas.Id
+inner join rublos on libretas.Rublo_id = rublos.Id
+group by Nombre_cuenta
+having Ingreso_menor > 25
+order by Ingreso_menor;
+
+-- Aqui puedo saber en una misma linea los roles de un usuario
+select First_name, group_concat(Nombre_rol)
+from usuarios
+inner join usuarios_roles on usuarios_roles.Usuario_id = usuarios.Id
+inner join roles on roles.id = usuarios_roles.Rol_id
+Group by Nickname
+;
+
+
+-- Cuantos usuarios tiene un rol y cuales son
+select Nombre_rol, count(*) Persona_Con_Este_Rol, group_concat(Nickname)
+from roles
+inner join usuarios_roles on usuarios_roles.Rol_id = roles.Id
+inner join usuarios on usuarios_roles.Usuario_id = usuarios.Id
+group by Nombre_rol
+order by Persona_Con_Este_Rol
+;
+
+-- Saber los roles de cada usuario
+select Nickname, First_name, Last_name ,group_concat(Nombre_rol)
+from usuarios
+inner join usuarios_roles on usuarios_roles.Usuario_id = usuarios.Id
+inner join roles on usuarios_roles.Rol_id = roles.Id
+group by Nickname
+;
