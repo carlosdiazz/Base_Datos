@@ -173,6 +173,17 @@ select NickName,First_name, Last_name, Nombre_cuenta, Nombre_Banco, SUM(Monto) T
     order by TOTAL_movido DESC
 ;
 
+-- Aqui lo agrupopor cuentas
+select Nickname, Nombre_cuenta, Nombre_banco, numero_transacion, Nombre_rublo, Monto, count(*)
+from usuarios
+inner join cuentas ON usuarios.id = cuentas.Usuario_id
+inner join bancos on cuentas.Banco_id = bancos.id
+inner join libretas on libretas.Cuenta_id = cuentas.Id
+inner join rublos on libretas.Rublo_id = rublos.Id
+
+group by Nombre_cuenta
+-- group by Nickname;
+
 -- Para ordenar... Puedo usar ASC o DESC
 select *
 from libretas
